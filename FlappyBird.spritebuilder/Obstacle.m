@@ -17,14 +17,22 @@ static const CGFloat minimumYPositionTopPipe = 128.f;
 // visibility ends at 480 and we want some meat
 static const CGFloat maximumYPositionBottomPipe = 440.f;
 // distance between top and bottom pipe
-static const CGFloat pipeDistance = 500.f;
+static const CGFloat pipeDistance = 300.f;
 // calculate the end of the range of top pipe
 static const CGFloat maximumYPositionTopPipe = maximumYPositionBottomPipe - pipeDistance;
+
+- (void)didLoadFromCCB {
+    _topPipe.physicsBody.collisionType = @"level";
+    _topPipe.physicsBody.sensor = TRUE;
+    _bottomPipe.physicsBody.collisionType = @"level";
+    _bottomPipe.physicsBody.sensor = TRUE;
+}
+
 - (void)setupRandomPosition {
     // value between 0.f and 1.f
     CGFloat random = ((double)arc4random() / ARC4RANDOM_MAX);
     CGFloat range = maximumYPositionTopPipe - minimumYPositionTopPipe;
     _topPipe.position = ccp(_topPipe.position.x, minimumYPositionTopPipe + (random * range));
-    _bottomPipe.position = ccp(_bottomPipe.position.x, _topPipe.position.y + pipeDistance);
+    _bottomPipe.position = ccp(_bottomPipe.position.x, _bottomPipe.position.y + pipeDistance);
 }
 @end

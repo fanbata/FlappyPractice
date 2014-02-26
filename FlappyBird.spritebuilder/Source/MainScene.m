@@ -33,14 +33,18 @@ typedef NS_ENUM(NSInteger, DrawingOrder) {
     _grounds = @[_ground1, _ground2];
     //adding Touch control
     self.userInteractionEnabled = TRUE;
+    for (CCNode *ground in _grounds) {
+        ground.physicsBody.collisionType = @"level";
+        ground.zOrder = DrawingOrderGround;
+    }
+    _physicsNode.collisionDelegate = self;
+    _hero.zOrder = DrawingOrderHero;
+    _hero.physicsBody.collisionType = @"hero";
     _obstacles = [NSMutableArray array];
     [self spawnNewObstacles];
     [self spawnNewObstacles];
     [self spawnNewObstacles];
-    for (CCNode *ground in _grounds) {
-        ground.zOrder = DrawingOrderGround;
-    }
-    _hero.zOrder = DrawingOrderHero;
+   
 }
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -72,7 +76,7 @@ typedef NS_ENUM(NSInteger, DrawingOrder) {
     
     //angle changes
     _sinceTouch += delta;
-    _hero.rotation = clampf(_hero.rotation, -30.f, 90.f);
+    _hero.rotation = clampf(_hero.rotation, -30.f, 45.f);
     if (_hero.physicsBody.allowsRotation) {
         float angularVelocity = clampf(_hero.physicsBody.angularVelocity, -2.f, 1.f);
         _hero.physicsBody.angularVelocity = angularVelocity;
@@ -111,6 +115,11 @@ typedef NS_ENUM(NSInteger, DrawingOrder) {
     [_physicsNode addChild:obstacle];
     [_obstacles addObject:obstacle];
     obstacle.zOrder = DrawingOrderPipes;
+}
+
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero level:(CCNode *)level {
+    NSLog(@"Game Over");
+    return TRUE;
 }
 
 @end
